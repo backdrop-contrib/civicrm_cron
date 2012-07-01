@@ -1,0 +1,9 @@
+name = CiviCRM Cron
+description = Uses Drupal's cron to call CiviCRM's cron.
+package = CiviCRM
+dependencies[] = civicrm
+
+core = 7.x
+
+configure = admin/config/civicrm/civicrm_cron
+
