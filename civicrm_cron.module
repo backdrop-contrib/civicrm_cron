@@ -27,7 +27,12 @@ function civicrm_cron_menu() {
  */
 function civicrm_cron_admin_settings($form, &$form_state) {
   $form = array();
-    
+  
+  if (!civicrm_initialize()) {
+    drupal_set_message(t('Failed to initialize CiviCRM'));
+    return;
+  }
+  
   $cron_values['name'] = variable_get('civicrm_cron_username', NULL);
   $cron_values['pass'] = variable_get('civicrm_cron_password', NULL);
   $cron_values['key'] = variable_get('civicrm_cron_sitekey', CIVICRM_SITE_KEY);
@@ -38,18 +43,13 @@ function civicrm_cron_admin_settings($form, &$form_state) {
     $result = drupal_http_request($url);
     //look for the CiviCRM error in response... successful processing returns nothing
     if ($result->data) {
-      drupal_set_message('CiviCRM Error: ' . $result->data, 'warning');
+      drupal_set_message('Attempted to use the following URL to process CiviCRM\'s cron: ' . $url . ' <br /> CiviCRM Error: ' . $result->data, 'warning');
     } else {
       drupal_set_message(t('CiviCRM Cron Successfully Run'));
     }
   }
   
   //http://wiki.civicrm.org/confluence/display/CRMDOC41/Command-line+Script+Configuration
-  $header = 'test';
-    
-  $form['civicrm_cron_header'] = array(
-    '#markup' => $status,
-  );
   
   $form['civicrm_cron_username'] = array(
     '#type' => 'textfield',
