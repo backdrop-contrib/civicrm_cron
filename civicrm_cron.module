@@ -42,9 +42,9 @@ function civicrm_cron_admin_settings($form, &$form_state) {
     return;
   }
   
-  
+  $cron_values['key'] = variable_get('civicrm_cron_sitekey', NULL);
 
-  if (empty($form_state['input']['civicrm_cron_sitekey']) && variable_get('civicrm_cron_sitekey', NULL) != NULL) {
+  if (empty($form_state['input']['civicrm_cron_sitekey']) && $cron_values['key'] != NULL) {
     global $base_url;
 
     $path = 'civicrm-cron/passthrough';    
@@ -63,7 +63,11 @@ function civicrm_cron_admin_settings($form, &$form_state) {
 
   //http://wiki.civicrm.org/confluence/display/CRMDOC41/Command-line+Script+Configuration
   
-  $cron_values['key'] = variable_get('civicrm_cron_sitekey', CIVICRM_SITE_KEY);
+  //if it's still NULL at this point, set to site key constant
+  if ($cron_values['key'] == NULL ) {
+    drupal_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
+    $cron_values['key'] = CIVICRM_SITE_KEY;
+  }
       
   $form['civicrm_cron_sitekey'] = array(
     '#type' => 'textfield',
