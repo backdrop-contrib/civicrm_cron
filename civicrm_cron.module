@@ -43,7 +43,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   }
   
   $cron_values['key'] = variable_get('civicrm_cron_sitekey', NULL);
-
+  
   if (empty($form_state['input']['civicrm_cron_sitekey']) && $cron_values['key'] != NULL) {
     global $base_url;
 
@@ -65,15 +65,17 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   
   //if it's still NULL at this point, set to site key constant
   if ($cron_values['key'] == NULL ) {
-    drupal_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
     $cron_values['key'] = CIVICRM_SITE_KEY;
+    if (empty($form_state['input']['civicrm_cron_sitekey'])) {
+      drupal_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
+    }
   }
       
   $form['civicrm_cron_sitekey'] = array(
     '#type' => 'textfield',
     '#title' => t('Sitekey'),
     '#default_value' => $cron_values['key'],
-    '#description' => t('Must match the sitekey found in the civicrm-settings.php file.'),
+    '#description' => t('Must match the sitekey found in the civicrm-settings.php file.  Leave this field empty to attempt to lookup the current site key.'),
   );
     
   return system_settings_form($form);

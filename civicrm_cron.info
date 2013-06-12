@@ -5,5 +5,5 @@ dependencies[] = civicrm
 
 core = 7.x
 
-configure = admin/config/civicrm/civicrm_cron
+configure = admin/config/civicrm/civicrm-cron
 
