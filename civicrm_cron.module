@@ -100,9 +100,9 @@ function civicrm_cron_cron() {
     $result = drupal_http_request($url);
     //look for the CiviCRM error in response... successful processing returns nothing
     if ($result->data) {
-      watchdog('civirm_cron', $result->data, NULL, WATCHDOG_ERROR);
+      watchdog('civicrm_cron', $result->data, NULL, WATCHDOG_ERROR);
     } else {
-      watchdog('civirm_cron', t('CiviCRM Cron Successfully Run'), NULL, WATCHDOG_NOTICE);
+      watchdog('civicrm_cron', t('CiviCRM Cron Successfully Run'), NULL, WATCHDOG_NOTICE);
     }
   }
   
