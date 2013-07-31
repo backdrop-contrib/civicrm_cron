@@ -23,7 +23,7 @@ function civicrm_cron_menu() {
     'title' => 'CiviCRM Cron Passthrough',
     'description' => 'Runs CiviCRM\'s cron within Drupal passing the site key as CiviCRM expects',
     'page callback' => 'civicrm_cron_passthrough',
-    'access arguments' => array('access content'),
+    'access callback' => TRUE,
     'type' => MENU_CALLBACK,
   );
   
@@ -70,7 +70,9 @@ function civicrm_cron_admin_settings($form, &$form_state) {
       drupal_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
     }
   }
-      
+  
+  
+  
   $form['civicrm_cron_sitekey'] = array(
     '#type' => 'textfield',
     '#title' => t('Sitekey'),
@@ -85,13 +87,15 @@ function civicrm_cron_admin_settings($form, &$form_state) {
  * Implementation of hook_cron().
  */
 function civicrm_cron_cron() {
- 
+  global $base_url;
+  global $user;
+  //print_r($user);
   //$cron_values['name'] = variable_get('civicrm_cron_username', NULL);
   //$cron_values['pass'] = variable_get('civicrm_cron_password', NULL);
   $cron_values['key'] = variable_get('civicrm_cron_sitekey', NULL);
   
   //$url = civicrm_cron_get_url($cron_values);
-  global $base_url;
+  
 
   $path = 'civicrm-cron/passthrough';    
   $url = $base_url . url($path, array('query' => $cron_values));
@@ -102,7 +106,7 @@ function civicrm_cron_cron() {
     if ($result->data) {
       watchdog('civicrm_cron', $result->data, NULL, WATCHDOG_ERROR);
     } else {
-      watchdog('civicrm_cron', t('CiviCRM Cron Successfully Run'), NULL, WATCHDOG_NOTICE);
+      watchdog('civicrm_cron', t('CiviCRM Cron Successfully Run as User ID ') . $user->uid, NULL, WATCHDOG_NOTICE);
     }
   }
   
@@ -111,7 +115,7 @@ function civicrm_cron_cron() {
 
 
 function civicrm_cron_passthrough() {
-
+  
   if (!civicrm_initialize()) {
     //watchdog('civirm_cron', t('Failed to initialize CiviCRM during Cron'), NULL, WATCHDOG_ERROR);
     return t('Failed to initialize CiviCRM during Cron');
@@ -122,7 +126,7 @@ function civicrm_cron_passthrough() {
   require_once 'CRM/Core/JobManager.php';
   $facility = new CRM_Core_JobManager();
  
-  $facility->execute();
+  $facility->execute(FALSE);
   
 }
 
