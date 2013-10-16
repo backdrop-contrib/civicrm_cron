@@ -15,7 +15,7 @@ function civicrm_cron_menu() {
     'description' => 'Settings to call CiviCRM\'s cron from Drupal\'s cron.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('civicrm_cron_admin_settings'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer CiviCRM'),
     'type' => MENU_NORMAL_ITEM,
   );
   
