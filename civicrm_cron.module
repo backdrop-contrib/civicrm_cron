@@ -23,7 +23,7 @@ function civicrm_cron_menu() {
     'title' => 'CiviCRM Cron Passthrough',
     'description' => 'Runs CiviCRM\'s cron within Drupal passing the site key as CiviCRM expects',
     'page callback' => 'civicrm_cron_passthrough',
-    'access arguments' => array('access content'),
+    'access arguments' => TRUE,
     'type' => MENU_CALLBACK,
   );
   
