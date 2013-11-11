@@ -34,6 +34,7 @@ function civicrm_cron_menu() {
  * Builds the civicrm_cron admininstration settings form.
  */
 function civicrm_cron_admin_settings($form, &$form_state) {
+  global $base_url;
   $form = array();
   
   if (!civicrm_initialize()) {
@@ -41,28 +42,24 @@ function civicrm_cron_admin_settings($form, &$form_state) {
     return;
   }
   
-  $cron_values['key'] = variable_get('civicrm_cron_sitekey', NULL);
+  $key = variable_get('civicrm_cron_sitekey', NULL);
   
-  if (empty($form_state['input']['civicrm_cron_sitekey']) && $cron_values['key'] != NULL) {
-    global $base_url;
+  if (empty($form_state['input']['civicrm_cron_sitekey']) && $key != NULL) {
 
-    $path = 'civicrm-cron/passthrough';    
-    $url = $base_url . url($path, array('query' => $cron_values));
-  
-    if ($url) {
-      $result = drupal_http_request($url);
+      $result = drupal_http_request($base_url . '/civicrm-cron/passthrough?key=' . $key);
       //look for the CiviCRM error in response... successful processing returns nothing
-      if ($result->data) {
+
+      if (!empty($result->data)) {
         drupal_set_message($result->data, 'error');
       } else {
         drupal_set_message(t('CiviCRM Cron Successfully Run'));
       }
-    }
+    
   }
   
   //if it's still NULL at this point, set to site key constant
-  if ($cron_values['key'] == NULL ) {
-    $cron_values['key'] = CIVICRM_SITE_KEY;
+  if ($key == NULL ) {
+    $key = CIVICRM_SITE_KEY;
     if (empty($form_state['input']['civicrm_cron_sitekey'])) {
       drupal_set_message(t('Save the Configuration to Test CiviCRM Cron'), 'warning');
     }
@@ -71,7 +68,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   $form['civicrm_cron_sitekey'] = array(
     '#type' => 'textfield',
     '#title' => t('Sitekey'),
-    '#default_value' => $cron_values['key'],
+    '#default_value' => $key,
     '#description' => t('Must match the sitekey found in the civicrm-settings.php file.  Leave this field empty to attempt to lookup the current site key.'),
   );
   
@@ -90,7 +87,7 @@ function civicrm_cron_admin_settings($form, &$form_state) {
   
   if ($cron_values['name']) {
     $account = user_load_by_name($cron_values['name']);
-    if (user_access('view all contacts', $account) && user_access('access CiviCRM', $account) 
+    if ($account && user_access('view all contacts', $account) && user_access('access CiviCRM', $account) 
     && user_access('access CiviMail', $account)) {
        drupal_set_message(t('User has correct permissions to run CiviMail job'));
     } else {
@@ -127,21 +124,16 @@ function civicrm_cron_admin_settings($form, &$form_state) {
  */
 function civicrm_cron_cron() {
   global $base_url;
-  $cron_values['key'] = variable_get('civicrm_cron_sitekey', NULL);
   
-  $path = 'civicrm-cron/passthrough';    
-  $url = $base_url . url($path, array('query' => $cron_values));
-  
-  if ($url) {
-    // we use drupal_http_request because any errors from
-    // $facility->execute() are printed to screen
-    $result = drupal_http_request($url);
-    //look for the CiviCRM error in response... successful processing returns nothing
-    if ($result->data) {
-      watchdog('civirm_cron', $result->data, NULL, WATCHDOG_ERROR);
-    } else {
-      watchdog('civirm_cron', t('CiviCRM Cron: Successfully Run'), NULL, WATCHDOG_NOTICE);
-    }
+  $key = variable_get('civicrm_cron_sitekey', NULL);
+  // we use drupal_http_request because any errors from
+  // $facility->execute() are printed to screen
+  $result = drupal_http_request($base_url . 'civicrm-cron/passthrough?key=' . $key);
+  //look for the CiviCRM error in response... successful processing returns nothing
+  if (!empty($result->data)) {
+    watchdog('civirm_cron', $result->data, NULL, WATCHDOG_ERROR);
+  } else {
+    watchdog('civirm_cron', t('CiviCRM Cron: Successfully Run'), NULL, WATCHDOG_NOTICE);
   }
   
 }
@@ -162,6 +154,6 @@ function civicrm_cron_passthrough() {
   require_once 'CRM/Core/JobManager.php';
   $facility = new CRM_Core_JobManager();
  
-  $facility->execute();
+  return $facility->execute();
   
 }
