@@ -3,7 +3,8 @@ description = Uses Drupal's cron to call CiviCRM's cron.
 package = CiviCRM-Contrib
 dependencies[] = civicrm
 
-core = 7.x
+backdrop = 1.x
+type = module
 
 configure = admin/config/civicrm/civicrm-cron
 
