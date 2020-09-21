@@ -147,7 +147,7 @@ function civicrm_cron_cron() {
     watchdog('civicrm_cron', 'CiviCRM cron error ' . $result->code . ': ' . $result->error, NULL, WATCHDOG_ERROR);
   }
   else {
-    watchdog('civicrm_cron', t('CiviCRM\'s cron was successfully run during Backdrop\'s cron.'), NULL, WATCHDOG_NOTICE);
+    watchdog('civicrm_cron', t('CiviCRM cron run completed.'), NULL, WATCHDOG_NOTICE);
   }
 
 }
