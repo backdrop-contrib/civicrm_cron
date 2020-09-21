@@ -11,17 +11,10 @@
  */
 function civicrm_cron_update_1000() {
   $config = config('civicrm_cron.settings');
-  $config->set('civicrm_cron_sitekey', update_variable_get('civicrm_cron_sitekey', 'NULL'));
-  $config->set('civicrm_cron_username', update_variable_get('civicrm_cron_username', 'NULL'));
-  $config->set('civicrm_cron_password', update_variable_get('civicrm_cron_password', 'NULL'));
+  $config->set('civicrm_cron_sitekey', update_variable_get('civicrm_cron_sitekey', ''));
+  $config->set('civicrm_cron_username', update_variable_get('civicrm_cron_username', ''));
+  $config->set('civicrm_cron_password', update_variable_get('civicrm_cron_password', ''));
   update_variable_del('civicrm_cron_sitekey');
   update_variable_del('civicrm_cron_username');
   update_variable_del('civicrm_cron_password');
-}
-
-/**
- * Implements hook_install().
- */
-function civicrm_cron_install() {
-  // Dynamically generated variable data was detected.
 }

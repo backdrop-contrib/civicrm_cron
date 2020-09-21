@@ -1,5 +1,5 @@
 name = CiviCRM Cron
-description = Uses Drupal's cron to call CiviCRM's cron.
+description = Uses Backdrop's cron to call CiviCRM's cron.
 package = CiviCRM-Contrib
 dependencies[] = civicrm
 
