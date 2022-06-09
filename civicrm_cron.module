@@ -35,9 +35,10 @@ function civicrm_cron_menu() {
  */
 function civicrm_cron_config_info() {
   $prefixes['civicrm_cron.settings'] = array(
-    'label' => t('Module name settings'),
+    'label' => t('CiviCRM Cron settings'),
     'group' => t('Configuration'),
   );
+  return $prefixes;
 }
 
 /**
